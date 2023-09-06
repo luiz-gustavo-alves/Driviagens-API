@@ -11,10 +11,13 @@ export const insertPassenger = async (req, res) => {
     }
 }
 
-export const getAllPassengersTravels = async (req, res) => {
-    
+export const getPassengersTravelsByQuery = async (req, res) => {
+
+    const query = { ...req.query };
+
     try {
-        res.send(req.body);
+        const passengers = await passengerService.getPassengersTravelsByQuery(query);
+        res.send(passengers);
 
     } catch (err) {
         res.status(500).send(err.message);

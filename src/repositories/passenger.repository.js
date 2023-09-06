@@ -3,6 +3,28 @@ import {
     mapObjectToGenericQuery
 } from "../utils/sql.utils.js";
 
+const getPassengersTravelsByQuery = async (query) => {
+
+    const { name } = query;
+    const nameQuery = (name) ? name : "";
+    
+    const passengers = await db.query(
+        `SELECT 
+            CONCAT(passengers."firstName", ' ', passengers."lastName") AS passenger, 
+            CAST(COUNT(travels."passengerId") AS INTEGER) AS travels 
+        FROM travels 
+        JOIN passengers ON travels."passengerId" = passengers.id
+        WHERE
+            "firstName" ILIKE '%'||$1||'%' OR
+            "lastName" ILIKE '%'||$1||'%'
+        GROUP BY passengers.id
+        ORDER BY travels DESC
+        LIMIT 11;
+        `, [nameQuery]
+    );
+    return passengers.rows;
+}
+
 const getPassengerById = async (id) => {
 
     const passenger = await db.query(`SELECT * FROM passengers WHERE id = $1`,
@@ -25,6 +47,7 @@ const insertPassenger = async (payload) => {
 }
 
 const passengerRepository = {
+    getPassengersTravelsByQuery,
     getPassengerById,
     insertPassenger
 };
