@@ -11,10 +11,13 @@ export const insertFlight = async (req, res) => {
     }
 }
 
-export const getAllFlights = async (req, res) => {
+export const getFlightsByQuery = async (req, res) => {
+
+    const query = { ...req.query };
 
     try {
-        res.send(req.body);
+        const flights = await flightService.getFlightsByQuery(query);
+        res.send(flights);
 
     } catch (err) {
         res.status(500).send(err.message);
