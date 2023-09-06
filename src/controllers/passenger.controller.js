@@ -1,9 +1,10 @@
-
+import passengerService from "../services/passenger.service.js";
 
 export const insertPassenger = async (req, res) => {
     
     try {
-        res.send(req.body);
+        await passengerService.insertPassenger(req.body);
+        res.sendStatus(201);
 
     } catch (err) {
         res.status(500).send(err.message);

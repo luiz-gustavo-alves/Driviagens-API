@@ -1,9 +1,10 @@
-
+import flightService from "../services/flight.service.js";
 
 export const insertFlight = async (req, res) => {
 
     try {
-        res.send(req.body);
+        await flightService.insertFlight(req.body);
+        res.sendStatus(201);
 
     } catch (err) {
         res.status(500).send(err.message);
