@@ -2,6 +2,10 @@ import passengerRepository from "../repositories/passenger.repository.js";
 import flightRepository from "../repositories/flight.repository.js";
 import travelRepository from "../repositories/travel.repository.js";
 
+import {
+    notFoundError
+} from "../errors/index.errors.js";
+
 const insertTravel = async (payload) => {
 
     const {
@@ -11,12 +15,12 @@ const insertTravel = async (payload) => {
 
     const passenger = await passengerRepository.getPassengerById(passengerId);
     if (!passenger) {
-        throw { type: "notFound", message: "Passageiro não encontrado." };
+        throw notFoundError("Passageiro não encontrado.");
     }
 
     const flight = await flightRepository.getFlightById(flightId);
     if (!flight) {
-        throw { type: "notFound", message: "Voo não encontrado." };
+        throw notFoundError("Voo não encontrado.");
     }
 
     await travelRepository.insertTravel(payload);

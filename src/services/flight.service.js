@@ -7,6 +7,13 @@ import {
     dateComparison
 } from "../utils/date.utils.js";
 
+import {
+    conflictError,
+    unprocessableEntityError,
+    notFoundError,
+    badRequestError
+} from "../errors/index.errors.js";
+
 const insertFlight = async (payload) => {
 
     const {
@@ -16,16 +23,16 @@ const insertFlight = async (payload) => {
     } = payload;
 
     if (origin === destination) {
-        throw { type: "conflict", message: "origem e destino devem ser diferentes." };
+        throw conflictError("Origem e destino devem ser diferentes.");
     }
 
     if (!dateComparisonWithToday(date)) {
-        throw { type: "unprocessableEntity", message: "A data do voo deve ser maior do que a data atual." };
+        throw unprocessableEntityError("A data do voo deve ser maior do que a data atual.");
     }
 
     const cities = await cityRepository.getCitiesByIds({origin, destination});
     if (cities.length < 2) {
-        throw { type: "notFound", message: "Cidades de origem e/ou destino não encontrado(s)." };
+        throw notFoundError("Cidades de origem e/ou destino não encontrado(s).");
     }
 
     payload.date = convertDateToISOFormat(date);
@@ -44,11 +51,11 @@ const getFlightsByQuery = async (query) => {
     if (usingQuery['smaller-date'] || usingQuery['bigger-date']) {
 
         if (!usingQuery['smaller-date'] || !usingQuery['bigger-date']) {
-            throw { type: "unprocessableEntity", message: "Os parâmetros 'smaller-date' e 'bigger-date' devem ser passados juntos." };
+            throw unprocessableEntityError("Os parâmetros 'smaller-date' e 'bigger-date' devem ser passados juntos.");
         }
 
         if (!dateComparison(query['smaller-date'], query['bigger-date'])) {
-            throw { type: "badRequest", message: "O parâmetro 'smaller-date' é maior que o parâmetro 'bigger-date'." };
+            throw badRequestError("O parâmetro 'smaller-date' é maior que o parâmetro 'bigger-date'.");
         }
 
         query['smaller-date'] = convertDateToISOFormat(query['smaller-date']);
@@ -57,7 +64,7 @@ const getFlightsByQuery = async (query) => {
 
     const flights = await flightRepository.getFlightsByQuery(query);
     if (flights.length === 0 && usingQuery['destination'] && (!usingQuery['smaller-date'] && !usingQuery['bigger-date'])) {
-        throw { type: "notFound", message: "Destinação não encontrada." };
+        throw notFoundError("Destinação não encontrada.");
     }
 
     return flights;
