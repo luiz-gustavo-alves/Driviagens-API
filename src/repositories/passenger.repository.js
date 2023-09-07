@@ -6,7 +6,6 @@ import {
 const getPassengersTravelsByQuery = async (query) => {
 
     const { name, page } = query;
-    const { name, page } = query;
     const nameQuery = (name) ? name : "";
     const pageQuery = (page) ? page * 10 : 0;
 

@@ -1,7 +1,5 @@
 import httpStatus from "http-status";
 
-import httpStatus from "http-status";
-
 export const validateQuery = (schema) => {
 
     return (req, res, next) => {
