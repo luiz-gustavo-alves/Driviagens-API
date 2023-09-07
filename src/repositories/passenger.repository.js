@@ -5,9 +5,15 @@ import {
 
 const getPassengersTravelsByQuery = async (query) => {
 
-    const { name } = query;
+    const { name, page } = query;
     const nameQuery = (name) ? name : "";
-    
+    const pageQuery = (page) ? page * 10 : 0;
+
+    const queryValues = [
+        nameQuery, 
+        pageQuery
+    ];
+
     const passengers = await db.query(
         `SELECT 
             CONCAT(passengers."firstName", ' ', passengers."lastName") AS passenger, 
@@ -19,15 +25,15 @@ const getPassengersTravelsByQuery = async (query) => {
             "lastName" ILIKE '%'||$1||'%'
         GROUP BY passengers.id
         ORDER BY travels DESC
-        LIMIT 11;
-        `, [nameQuery]
+        LIMIT 10 OFFSET $2; 
+        `, [...queryValues]
     );
     return passengers.rows;
 }
 
 const getPassengerById = async (id) => {
 
-    const passenger = await db.query(`SELECT * FROM passengers WHERE id = $1`,
+    const passenger = await db.query(`SELECT * FROM passengers WHERE id = $1;`,
         [id]
     );
     return passenger.rows[0];
