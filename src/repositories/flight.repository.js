@@ -13,13 +13,16 @@ const getFlightById = async (id) => {
 
 const getFlightsByQuery = async (query) => {
 
-    const {
-        origin,
-        destination
-    } = query;
+    const { page } = query;
+    const pageQuery = (page) ? page * 10 : 0;
 
-    const smallerDate = query['smaller-date'];
-    const biggerDate = query['bigger-date'];
+    const queryValues = [
+        query['origin'],
+        query['destination'],
+        query['smaller-date'],
+        query['bigger-date'],
+        pageQuery
+    ];
 
     const flights = await db.query(
         `SELECT
@@ -37,8 +40,9 @@ const getFlightsByQuery = async (query) => {
             ($3 = 'null' OR flights.date >= $3::date) AND
             ($4 = 'null' OR flights.date <= $4::date)
         )
-        ORDER BY flights.date DESC;
-        `, [origin, destination, smallerDate, biggerDate]
+        ORDER BY flights.date DESC
+        LIMIT 10 OFFSET $5;
+        `, [...queryValues]
     );
     return flights.rows;
 }

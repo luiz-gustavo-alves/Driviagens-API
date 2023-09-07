@@ -14,7 +14,7 @@ export const errorHandler = (err, req, res, next) => {
             return res.status(httpStatus.NOT_FOUND).send(err.message);
 
         case "tooManyResults":
-            return res.status(httpStatus.TOO_MANY_REQUESTS).send(err.message);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
 
         case "unprocessableEntity":
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(err.message);

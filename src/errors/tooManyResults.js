@@ -1,7 +1,7 @@
 export const tooManyResultsError = (message) => {
 
     if (!message) {
-        message = "Máximo de resultados excedido";
+        message = "Too many results";
     }
 
     return {
