@@ -15,6 +15,8 @@ const getFlightsByQuery = async (query) => {
 
     const { page } = query;
     const pageQuery = (page) ? page * 10 : 0;
+    const { page } = query;
+    const pageQuery = (page) ? page * 10 : 0;
 
     const queryValues = [
         query['origin'],
