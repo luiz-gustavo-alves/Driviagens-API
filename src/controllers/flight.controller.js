@@ -1,9 +1,10 @@
 import flightService from "../services/flight.service.js";
+import httpStatus from "http-status";
 
 export const insertFlight = async (req, res) => {
 
     await flightService.insertFlight(req.body);
-    res.sendStatus(201);
+    res.sendStatus(httpStatus.CREATED);
 }
 
 export const getFlightsByQuery = async (req, res) => {
