@@ -23,11 +23,11 @@ const insertFlight = async (payload) => {
     } = payload;
 
     if (origin === destination) {
-        throw conflictError("Origem e destino devem ser diferentes.");
+        throw conflictError("Cidades de origem e destino devem ser diferentes.");
     }
 
     if (!dateComparisonWithToday(date)) {
-        throw unprocessableEntityError("A data do voo deve ser maior do que a data atual.");
+        throw unprocessableEntityError("A data de voo fornecida deve ser maior que a data atual.");
     }
 
     const cities = await cityRepository.getCitiesByIds({origin, destination});
@@ -55,7 +55,7 @@ const getFlightsByQuery = async (query) => {
         }
 
         if (!dateComparison(query['smaller-date'], query['bigger-date'])) {
-            throw badRequestError("O parâmetro 'smaller-date' é maior que o parâmetro 'bigger-date'.");
+            throw badRequestError("Parâmetro 'smaller-date' maior que o parâmetro 'bigger-date'.");
         }
 
         query['smaller-date'] = convertDateToISOFormat(query['smaller-date']);
@@ -63,10 +63,6 @@ const getFlightsByQuery = async (query) => {
     }
 
     const flights = await flightRepository.getFlightsByQuery(query);
-    if (flights.length === 0 && usingQuery['destination'] && (!usingQuery['smaller-date'] && !usingQuery['bigger-date'])) {
-        throw notFoundError("Destinação não encontrada.");
-    }
-
     return flights;
 }
 

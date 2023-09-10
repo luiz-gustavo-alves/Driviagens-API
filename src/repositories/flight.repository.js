@@ -40,7 +40,7 @@ const getFlightsByQuery = async (query) => {
             ($3 = 'null' OR flights.date >= $3::date) AND
             ($4 = 'null' OR flights.date <= $4::date)
         )
-        ORDER BY flights.date DESC
+        ORDER BY flights.date
         LIMIT 10 OFFSET $5; 
         `, [...queryValues]
     );
